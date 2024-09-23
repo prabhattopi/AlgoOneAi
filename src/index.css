@@ -1,0 +1,34 @@
+.app-container {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #fff;
+  background-color:white;
+}
+
+h1 {
+  color: #ff4c4c;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.slider-container {
+  margin: 20px 0;
+}
+
+.slider-container span {
+  display: inline-block;
+  margin-left: 10px;
+  color: #fff;
+}
+
+.material-table {
+  background-color: #0f3460;
+
+}
+
+.material-table th,
+.material-table td {
+  color: #fff;
+  border-color: #16213e;
+  text-align: center;
+}
