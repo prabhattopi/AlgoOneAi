@@ -9,17 +9,38 @@ const TableComponent = ({ data }) => {
 
   // Memoize filtered data based on filterValues
   const filteredData = useMemo(() => {
+    let filtered = data;
+    console.log(filtered)
+
     if (filterValues.in && filterValues.out) {
-      return data;
+      filtered=data
     }
+  
+    // Apply "in" filter if checked
     if (filterValues.in) {
-      return data.filter((row) => row.percent_in_out_money >= 0);
+      filtered = filtered.filter((row) => row.percent_in_out_money >= 0);
     }
+  
+    // Apply "out" filter if checked
     if (filterValues.out) {
-      return data.filter((row) => row.percent_in_out_money < 0);
+      filtered = filtered.filter((row) => row.percent_in_out_money < 0);
     }
-    return data; // No filter applied, show all data
+  
+    // Assign subRows: the next item is the subRow for the current item.
+    const filteredWithSubRows = filtered.reduce((acc, item, i) => {
+      if (i % 2 === 0) {
+        const subRow = filtered[i + 1] || null;
+        acc.push({
+          ...item,
+          subRows: subRow ? [subRow] : [],
+        });
+      }
+      return acc;
+    }, []);
+  
+    return filteredWithSubRows;
   }, [filterValues, data]);
+  
 
   const columns = [
     { accessorKey: "strike", header: "Strike" },
@@ -142,6 +163,7 @@ const TableComponent = ({ data }) => {
       <MaterialReactTable
         columns={columns}
         data={filteredData}
+        enableExpanding={true}
         muiTableBodyCellProps={{
           sx: {
             width: "130px",
@@ -167,16 +189,18 @@ const TableComponent = ({ data }) => {
             border: "1px solid #e0e0e0",
           },
         }}
-        muiTableBodyRowProps={{
+        muiTableBodyRowProps={({ row }) => ({
           sx: {
+            backgroundColor: row.original.subRows?.length ?"#6A0DAD":"#fff" , // Purple for normal rows, white for subRows
             "&:nth-of-type(even)": {
-              backgroundColor: "#f9f9f9",
+              backgroundColor: row.original.subRows?.length ?"#6A0DAD": "#fff",
             },
             "&:nth-of-type(odd)": {
-              backgroundColor: "#ffffff",
+              backgroundColor: row.original.subRows?.length ? "#6A0DAD":"#fff" ,
             },
+           
           },
-        }}
+        })}
         enableColumnFilters
         enableRowSelection={false}
         enablePagination={false}
